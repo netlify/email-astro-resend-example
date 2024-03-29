@@ -1,9 +1,4 @@
-import {
-  createTestAccount,
-  createTransport,
-  getTestMessageUrl,
-  type Transporter,
-} from "nodemailer";
+import { createTestAccount, createTransport, getTestMessageUrl, type Transporter } from "nodemailer";
 
 type SendEmailOptions = {
   /** Email address of the recipient */
@@ -17,9 +12,7 @@ type SendEmailOptions = {
 /**
  * Sends an email with Nodemailer using the provided transporter.
  */
-export async function sendEmail(
-  options: SendEmailOptions
-): Promise<Transporter> {
+export async function sendEmail(options: SendEmailOptions): Promise<Transporter> {
   const transporter = await getEmailAccount();
   return new Promise(async (resolve, reject) => {
     // Build the email message
