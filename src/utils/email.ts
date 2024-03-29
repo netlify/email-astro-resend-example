@@ -1,4 +1,5 @@
 import { createTestAccount, createTransport, getTestMessageUrl, type Transporter } from "nodemailer";
+import mg from "nodemailer-mailgun-transport";
 
 type SendEmailOptions = {
   /** Email address of the recipient */
@@ -41,14 +42,22 @@ export async function sendEmail(options: SendEmailOptions): Promise<Transporter>
  */
 async function getEmailAccount(): Promise<Transporter> {
   return new Promise((resolve, reject) => {
-    // Create a test email account using ethereal.email
+    // Use Mailgun in production
+    if (import.meta.env.NODE_ENV === "production") {
+      if (!import.meta.env.MAILGUN_API_KEY || !import.meta.env.MAILGUN_DOMAIN) {
+        throw new Error("Missing Mailgun configuration");
+      }
+      const transporter = createTransport(
+        mg({ auth: { api_key: import.meta.env.MAILGUN_API_KEY, domain: import.meta.env.MAILGUN_DOMAIN } })
+      );
+      resolve(transporter);
+    }
+
+    // Create a test email account using ethereal.email when in development
     createTestAccount((err, account) => {
-      const transporter = createTransport({
-        host: account.smtp.host,
-        port: account.smtp.port,
-        secure: account.smtp.secure,
-        auth: { user: account.user, pass: account.pass },
-      });
+      const { user, pass, smtp } = account;
+      const { host, port, secure } = smtp;
+      const transporter = createTransport({ host, port, secure, auth: { user, pass } });
       resolve(transporter);
     });
   });

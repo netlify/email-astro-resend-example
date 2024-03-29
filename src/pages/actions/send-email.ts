@@ -15,6 +15,7 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
     const html = `<div>${message}</div>`;
     await sendEmail({ to, subject, html });
   } catch (error) {
+    console.error(error);
     throw new Error("Failed to send email");
   }
 
