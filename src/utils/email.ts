@@ -43,8 +43,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<Transporter>
 async function getEmailAccount(): Promise<Transporter> {
   return new Promise((resolve, reject) => {
     // Use Mailgun in production
-    console.log(process.env.NODE_ENV);
-    if (process.env.NODE_ENV === "production") {
+    if (import.meta.env.NODE_ENV === "production") {
       if (!import.meta.env.MAILGUN_API_KEY || !import.meta.env.MAILGUN_DOMAIN) {
         throw new Error("Missing Mailgun configuration");
       }
