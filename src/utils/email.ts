@@ -93,6 +93,6 @@ async function parseEmailTemplate(name: TemplateParams["name"], params: Record<s
 async function getEmailTemplatePath(name: TemplateParams["name"]): Promise<string> {
   const templatePath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), `templates/${name}.ejs`);
   console.log(templatePath);
-  if (!fs.existsSync(templatePath)) throw new Error(`Template not found: ${name}`);
+  if (!fs.existsSync(templatePath)) throw new Error(`Template not found: ${templatePath}`);
   return templatePath;
 }
