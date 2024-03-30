@@ -1,2 +1,2 @@
 [functions]
-  included_files = ["src/utils/templates/**"]
+  included_files = ["src/utils/templates/**.ejs"]
