@@ -1,13 +1,27 @@
+import ejs from "ejs";
+import fs from "fs";
 import { createTestAccount, createTransport, getTestMessageUrl, type Transporter } from "nodemailer";
 import mg from "nodemailer-mailgun-transport";
+import path from "path";
+import { fileURLToPath } from "url";
+
+type TemplateParams =
+  | {
+      name: "welcome";
+      params: { name: string };
+    }
+  | {
+      name: "custom";
+      params: { html: string };
+    };
 
 type SendEmailOptions = {
   /** Email address of the recipient */
   to: string;
   /** Subject line of the email */
   subject: string;
-  /** Message used for the body of the email */
-  html: string;
+  /** Parameters to send to the template */
+  template: TemplateParams;
 };
 
 /**
@@ -16,10 +30,11 @@ type SendEmailOptions = {
 export async function sendEmail(options: SendEmailOptions): Promise<Transporter> {
   const transporter = await getEmailAccount();
   return new Promise(async (resolve, reject) => {
+    const { to, subject, template } = options;
+    // Parse email template
+    const html = await parseEmailTemplate(template.name, template.params);
     // Build the email message
-    const { to, subject, html } = options;
-    const from = "MyApp <noreply@example.com>";
-    const message = { from, to, subject, html };
+    const message = { to, subject, html, from: "MyApp <noreply@example.com>" };
     // Send the email
     transporter.sendMail(message, (err, info) => {
       // Log the error if one occurred
@@ -64,34 +79,20 @@ async function getEmailAccount(): Promise<Transporter> {
 }
 
 /**
- * Reads an email template from the file system, passing through the data
- * options.
- */
-// async function readEmailTemplate(options: SendEmailOptions['template']): Promise<string> {
-//   const content = await parseEmailTemplate(options.name, options.data);
-//   const layout = await parseEmailTemplate('__layout__', { content });
-//   return layout;
-// }
-
-/**
  * Parses an email template with EJS, using the provided data options.
  */
-// async function parseEmailTemplate(name: string, data: Record<string, unknown>): Promise<string> {
-//   const templatePath = await getEmailTemplatePath(name);
-//   const rawTemplate = fs.readFileSync(templatePath, 'utf8');
-//   const template = ejs.render(rawTemplate, data);
-//   return template;
-// }
+async function parseEmailTemplate(name: TemplateParams["name"], params: Record<string, unknown>): Promise<string> {
+  const templatePath = await getEmailTemplatePath(name);
+  const rawTemplate = fs.readFileSync(templatePath, "utf8");
+  return ejs.render(rawTemplate, params);
+}
 
 /**
  * Returns the absolute file path to an email template.
  */
-// async function getEmailTemplatePath(name: string): Promise<string> {
-//   const templatePath = path.resolve(
-//     __dirname(import.meta.url),
-//     '..',
-//     `templates/email/${name}.ejs`,
-//   );
-//   if (!fs.existsSync(templatePath)) throw new Error(`Template not found: ${name}`);
-//   return templatePath;
-// }
+async function getEmailTemplatePath(name: TemplateParams["name"]): Promise<string> {
+  const templatePath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), `templates/${name}.ejs`);
+  console.log(templatePath);
+  if (!fs.existsSync(templatePath)) throw new Error(`Template not found: ${name}`);
+  return templatePath;
+}

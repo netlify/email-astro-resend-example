@@ -13,7 +13,8 @@
   <body>
     <h1>Email with Astro + Nodemailer</h1>
 
-    <form action="/actions/send-email" method="post">
+    <form action="/actions/send-custom-email" method="post">
+      <h2>Custom Email</h2>
       <div>
         <label for="send-email__recipient">To:</label>
         <input type="email" name="recipient" id="send-email__recipient" required />
@@ -25,6 +26,21 @@
       <div>
         <label for="send-email__message">Message:</label>
         <textarea name="message" id="send-email__message" required></textarea>
+      </div>
+      <input type="submit" value="Send message" />
+    </form>
+
+    <hr />
+
+    <form action="/actions/send-welcome-email" method="post">
+      <h2>Welcome Email</h2>
+      <div>
+        <label for="send-email__recipient">To:</label>
+        <input type="email" name="recipient" id="send-email__recipient" required />
+      </div>
+      <div>
+        <label for="send-email__name">Name:</label>
+        <input type="text" name="name" id="send-email__name" required />
       </div>
       <input type="submit" value="Send message" />
     </form>

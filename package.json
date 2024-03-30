@@ -12,9 +12,11 @@
   "dependencies": {
     "@astrojs/check": "^0.5.10",
     "@astrojs/netlify": "^5.2.0",
+    "@types/ejs": "^3.1.5",
     "@types/nodemailer": "^6.4.14",
     "@types/nodemailer-mailgun-transport": "^1.4.6",
     "astro": "^4.5.12",
+    "ejs": "^3.1.9",
     "nodemailer": "^6.9.13",
     "nodemailer-mailgun-transport": "^2.1.5",
     "typescript": "^5.4.3"
