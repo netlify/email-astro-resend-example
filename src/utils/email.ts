@@ -82,30 +82,6 @@ async function getEmailAccount(): Promise<Transporter> {
  * Parses an email template with EJS, using the provided data options.
  */
 async function parseEmailTemplate(name: TemplateParams["name"], params: Record<string, unknown>): Promise<string> {
-  const templatePath = await getEmailTemplatePath(name);
-  const rawTemplate = fs.readFileSync(templatePath, "utf8");
+  const rawTemplate = fs.readFileSync(`./src/utils/templates/${name}.ejs`, "utf8");
   return ejs.render(rawTemplate, params);
-}
-
-/**
- * Returns the absolute file path to an email template.
- */
-async function getEmailTemplatePath(name: TemplateParams["name"]): Promise<string> {
-  const dirname = path.dirname(fileURLToPath(import.meta.url));
-
-  const templatePath01 = path.resolve(dirname, `templates/${name}.ejs`);
-  console.log(`[${fs.existsSync(templatePath01)}] ${templatePath01}`);
-
-  const templatePath02 = path.resolve(dirname, `src/utils/templates/${name}.ejs`);
-  console.log(`[${fs.existsSync(templatePath02)}] ${templatePath02}`);
-
-  const templatePath03 = path.resolve(dirname, `utils/templates/${name}.ejs`);
-  console.log(`[${fs.existsSync(templatePath03)}] ${templatePath03}`);
-
-  const filesInDir = fs.readdirSync(dirname);
-  console.log("Files in directory:", filesInDir);
-
-  const templatePath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), `templates/${name}.ejs`);
-  if (!fs.existsSync(templatePath)) throw new Error(`Template not found: ${templatePath}`);
-  return templatePath;
 }
