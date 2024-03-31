@@ -99,6 +99,12 @@ async function getEmailTemplatePath(name: TemplateParams["name"]): Promise<strin
   const templatePath02 = path.resolve(dirname, `src/utils/templates/${name}.ejs`);
   console.log(`[${fs.existsSync(templatePath02)}] ${templatePath02}`);
 
+  const templatePath03 = path.resolve(dirname, `utils/templates/${name}.ejs`);
+  console.log(`[${fs.existsSync(templatePath03)}] ${templatePath03}`);
+
+  const filesInDir = fs.readdirSync(dirname);
+  console.log("Files in directory:", filesInDir);
+
   const templatePath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), `templates/${name}.ejs`);
   if (!fs.existsSync(templatePath)) throw new Error(`Template not found: ${templatePath}`);
   return templatePath;
