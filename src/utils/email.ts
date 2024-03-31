@@ -91,6 +91,14 @@ async function parseEmailTemplate(name: TemplateParams["name"], params: Record<s
  * Returns the absolute file path to an email template.
  */
 async function getEmailTemplatePath(name: TemplateParams["name"]): Promise<string> {
+  const dirname = path.dirname(fileURLToPath(import.meta.url));
+
+  const templatePath01 = path.resolve(dirname, `templates/${name}.ejs`);
+  console.log(`[${fs.existsSync(templatePath01)}] ${templatePath01}`);
+
+  const templatePath02 = path.resolve(dirname, `src/utils/templates/${name}.ejs`);
+  console.log(`[${fs.existsSync(templatePath02)}] ${templatePath02}`);
+
   const templatePath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), `templates/${name}.ejs`);
   if (!fs.existsSync(templatePath)) throw new Error(`Template not found: ${templatePath}`);
   return templatePath;
