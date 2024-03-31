@@ -81,7 +81,7 @@ async function getEmailAccount(): Promise<Transporter> {
 /**
  * Parses an email template with EJS, using the provided data options.
  */
-async function parseEmailTemplate(name: TemplateParams["name"], params: Record<string, unknown>): Promise<string> {
+async function parseEmailTemplate(name: TemplateParams["name"], params: TemplateParams["params"]): Promise<string> {
   const rawTemplate = fs.readFileSync(`./src/utils/templates/${name}.ejs`, "utf8");
   return ejs.render(rawTemplate, params);
 }
