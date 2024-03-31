@@ -2,8 +2,6 @@ import ejs from "ejs";
 import fs from "fs";
 import { createTestAccount, createTransport, getTestMessageUrl, type Transporter } from "nodemailer";
 import mg from "nodemailer-mailgun-transport";
-import path from "path";
-import { fileURLToPath } from "url";
 
 type TemplateParams =
   | {
@@ -24,11 +22,8 @@ type SendEmailOptions = {
   template: TemplateParams;
 };
 
-/**
- * Sends an email with Nodemailer using the provided transporter.
- */
 export async function sendEmail(options: SendEmailOptions): Promise<Transporter> {
-  const transporter = await getEmailAccount();
+  const transporter = await getEmailTransporter();
   return new Promise(async (resolve, reject) => {
     const { to, subject, template } = options;
     // Parse email template
@@ -51,11 +46,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<Transporter>
   });
 }
 
-/**
- * Instantiates an email account and transporter for sending emails with
- * Nodemailer.
- */
-async function getEmailAccount(): Promise<Transporter> {
+async function getEmailTransporter(): Promise<Transporter> {
   return new Promise((resolve, reject) => {
     // Use Mailgun in production
     if (import.meta.env.NODE_ENV === "production") {
@@ -78,10 +69,9 @@ async function getEmailAccount(): Promise<Transporter> {
   });
 }
 
-/**
- * Parses an email template with EJS, using the provided data options.
- */
 async function parseEmailTemplate(name: TemplateParams["name"], params: TemplateParams["params"]): Promise<string> {
+  // Read the raw template file
   const rawTemplate = fs.readFileSync(`./src/utils/templates/${name}.ejs`, "utf8");
+  // Run the template through EJS to replace variables with parameter values
   return ejs.render(rawTemplate, params);
 }
