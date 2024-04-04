@@ -29,7 +29,8 @@ export async function sendEmail(options: SendEmailOptions): Promise<Transporter>
     // Parse email template
     const html = await parseEmailTemplate(template.name, template.params);
     // Build the email message
-    const message = { to, subject, html, from: "MyApp <noreply@example.com>" };
+    const from = import.meta.env.SEND_EMAIL_FROM || "MyApp <noreply@example.com>";
+    const message = { to, subject, html, from };
     // Send the email
     transporter.sendMail(message, (err, info) => {
       // Log the error if one occurred
