@@ -1,7 +1,7 @@
 import ejs from "ejs";
 import fs from "fs";
-import { createTestAccount, createTransport, getTestMessageUrl, type Transporter } from "nodemailer";
-import mg from "nodemailer-mailgun-transport";
+import { createTestAccount, createTransport, getTestMessageUrl } from "nodemailer";
+import type { Transporter } from "nodemailer";
 
 type TemplateParams =
   | {
@@ -48,14 +48,17 @@ export async function sendEmail(options: SendEmailOptions): Promise<Transporter>
 
 async function getEmailTransporter(): Promise<Transporter> {
   return new Promise((resolve, reject) => {
-    // Use Mailgun in production
+    // Use Resend in production
     if (import.meta.env.NODE_ENV === "production") {
-      if (!import.meta.env.MAILGUN_API_KEY || !import.meta.env.MAILGUN_DOMAIN) {
-        throw new Error("Missing Mailgun configuration");
+      if (!import.meta.env.RESEND_API_KEY) {
+        throw new Error("Missing Resend configuration");
       }
-      const transporter = createTransport(
-        mg({ auth: { api_key: import.meta.env.MAILGUN_API_KEY, domain: import.meta.env.MAILGUN_DOMAIN } })
-      );
+      const transporter = createTransport({
+        host: "smtp.resend.com",
+        secure: true,
+        port: 465,
+        auth: { user: "resend", pass: import.meta.env.RESEND_API_KEY },
+      });
       resolve(transporter);
     }
 

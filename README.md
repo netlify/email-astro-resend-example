@@ -1,1 +1,1 @@
-# Send emails with Astro using Mailgun
+# Send emails with Astro using Resend
