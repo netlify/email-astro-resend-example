@@ -3,15 +3,10 @@ import fs from "fs";
 import { createTestAccount, createTransport, getTestMessageUrl } from "nodemailer";
 import type { Transporter } from "nodemailer";
 
-type TemplateParams =
-  | {
-      name: "welcome";
-      params: { name: string };
-    }
-  | {
-      name: "custom";
-      params: { html: string };
-    };
+type WelcomeEmailParams = { name: "welcome"; params: { name: string } };
+type CustomEmailParams = { name: "custom"; params: { html: string } };
+
+type TemplateParams = WelcomeEmailParams | CustomEmailParams;
 
 type SendEmailOptions = {
   /** Email address of the recipient */
