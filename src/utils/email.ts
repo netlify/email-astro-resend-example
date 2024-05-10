@@ -45,7 +45,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<Transporter>
 async function getEmailTransporter(): Promise<Transporter> {
   return new Promise((resolve, reject) => {
     // Use Resend in production
-    if (import.meta.env.NODE_ENV === "production") {
+    if (import.meta.env.PROD) {
       if (!import.meta.env.RESEND_API_KEY) {
         throw new Error("Missing Resend configuration");
       }
